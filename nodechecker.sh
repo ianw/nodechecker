@@ -17,7 +17,7 @@ STATUS_FILE=$(mktemp)
 OVERALL="PASS"
 
 echo "Nodepool status run $(date)" >> $STATUS_FILE
-echo "-----------------------------------------------" >> $STATUS_FILE
+echo "------------------------------------------------" >> $STATUS_FILE
 echo >> $STATUS_FILE
 
 for l in $ALL_LOGS; do
@@ -43,7 +43,7 @@ done
 if [ -f "email-addresses" ]; then
     sed -i "1iSubject: nodepool checker $(date) : $OVERALL" $STATUS_FILE
     echo "." >> $STATUS_FILE
-    sendmail $(cat email-addresses | xargs) < $STATUS_FILE
+    /usr/sbin/sendmail $(cat email-addresses | xargs) < $STATUS_FILE
 fi
 
 echo "done!"
