@@ -46,6 +46,12 @@ if [ -f "email-addresses" ]; then
     /usr/sbin/sendmail $(cat email-addresses | xargs) < $STATUS_FILE
 fi
 
+if [ -d "nodecheck-output" ]; then
+    d=$(date '+%Y-%m-%d')
+    outfile="nodecheck-output/nodecheck-$d.txt"
+    cp $STATUS_FILE $outfile
+fi
+
 echo "done!"
 
 rm $STATUS_FILE
