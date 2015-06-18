@@ -57,6 +57,7 @@ if [ -d "nodechecker-output" ]; then
 fi
 
 if [ -f "email-addresses" ]; then
+    sed -i "1iTo: $(paste -d, -s email-addresses)" $STATUS_FILE
     sed -i "1iSubject: [nodepool] devstack-node build checker $(date) : $OVERALL" $STATUS_FILE
     echo "." >> $STATUS_FILE
     /usr/sbin/sendmail $(cat email-addresses | xargs) < $STATUS_FILE
