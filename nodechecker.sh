@@ -2,13 +2,21 @@
 
 NODEPOOL_LOGS="http://nodepool.openstack.org"
 
-NODE_TYPES="devstack-centos7 devstack-f21"
-BUILD_CLOUD="rax-dfw rax-iad rax-ord hpcloud-b1 \
-           hpcloud-b2 hpcloud-b3 hpcloud-b4 hpcloud-b5"
+RAX_BUILD_CLOUD=" rax-dfw rax-iad rax-ord"
+HP_BUILD_CLOUD=" hpcloud-b1 hpcloud-b2 hpcloud-b3 hpcloud-b4 hpcloud-b5"
 
 ALL_LOGS=""
-for n in $NODE_TYPES; do
-    for b in $BUILD_CLOUD; do
+
+#centos/fedora check everywhere
+for n in devstack-centos7 devstack-f21; do
+    for b in $RAX_BUILD_CLOUD $HP_BUILD_CLOUD; do
+        ALL_LOGS+=" $b.$n.log"
+    done
+done
+
+#trusty / precise rax builds
+for n in devstack-trusty devstack-precise; do
+    for b in $RAX_BUILD_CLOUD; do
         ALL_LOGS+=" $b.$n.log"
     done
 done
@@ -16,8 +24,10 @@ done
 STATUS_FILE=$(mktemp)
 OVERALL="PASS"
 
-echo "Nodepool status run $(date)" >> $STATUS_FILE
-echo "------------------------------------------------" >> $STATUS_FILE
+title="nodecheker run at $(date)"
+echo $title >> $STATUS_FILE
+printf "%${#title}s\n" | tr ' ' - >> $STATUS_FILE
+
 echo >> $STATUS_FILE
 
 for l in $ALL_LOGS; do
@@ -40,16 +50,18 @@ for l in $ALL_LOGS; do
     echo >> $STATUS_FILE
 done
 
-if [ -f "email-addresses" ]; then
-    sed -i "1iSubject: nodepool checker $(date) : $OVERALL" $STATUS_FILE
-    echo "." >> $STATUS_FILE
-    /usr/sbin/sendmail $(cat email-addresses | xargs) < $STATUS_FILE
-fi
-
 if [ -d "nodechecker-output" ]; then
     d=$(date '+%Y-%m-%d')
     outfile="nodechecker-output/nodechecker-$d.txt"
     cp $STATUS_FILE $outfile
+fi
+
+if [ -f "email-addresses" ]; then
+    sed -i "1iSubject: [nodepool] devstack-node build checker $(date) : $OVERALL" $STATUS_FILE
+    echo "." >> $STATUS_FILE
+    /usr/sbin/sendmail $(cat email-addresses | xargs) < $STATUS_FILE
+else
+    cat $STATUS_FILE
 fi
 
 echo "done!"
