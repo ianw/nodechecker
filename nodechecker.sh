@@ -3,29 +3,13 @@
 NODEPOOL_LOGS="http://nodepool.openstack.org"
 
 RAX_BUILD_CLOUD=" rax-dfw rax-iad rax-ord"
-HP_BUILD_CLOUD=" hpcloud-b1 hpcloud-b2 hpcloud-b3 hpcloud-b4 hpcloud-b5"
 
 ALL_LOGS=""
 
-#centos/fedora check everywhere
-for n in devstack-centos7 devstack-f21; do
-    for b in $RAX_BUILD_CLOUD $HP_BUILD_CLOUD; do
-        ALL_LOGS+=" $b.$n.log"
-    done
-done
-
-#trusty / precise rax builds
-for n in devstack-trusty devstack-precise; do
-    for b in $RAX_BUILD_CLOUD; do
-        ALL_LOGS+=" $b.$n.log"
-    done
-done
-
 # dib builds
-ALL_LOGS+=" dib.devstack-centos7-dib.log"
-ALL_LOGS+=" dib.devstack-fedora21-dib.log"
-ALL_LOGS+=" dib.fedora-22.log"
+ALL_LOGS+=" dib.devstack-centos7.log"
 ALL_LOGS+=" dib.ubuntu-trusty.log"
+ALL_LOGS+=" dib.fedora-23.log"
 
 STATUS_FILE=$(mktemp)
 OVERALL="PASS"
