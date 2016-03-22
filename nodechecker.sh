@@ -2,14 +2,19 @@
 
 NODEPOOL_LOGS="http://nodepool.openstack.org"
 
-RAX_BUILD_CLOUD=" rax-dfw rax-iad rax-ord"
-
 ALL_LOGS=""
 
 # dib builds
+
+# "old" image based build
 ALL_LOGS+=" dib.devstack-centos7.log"
-ALL_LOGS+=" dib.ubuntu-trusty.log"
+
+# minimal build
+ALL_LOGS+=" dib.centos-7.log"
 ALL_LOGS+=" dib.fedora-23.log"
+
+ALL_LOGS+=" dib.ubuntu-trusty.log"
+ALL_LOGS+=" dib.debian-jessie.log"
 
 STATUS_FILE=$(mktemp)
 OVERALL="PASS"
@@ -23,9 +28,10 @@ echo >> $STATUS_FILE
 for l in $ALL_LOGS; do
     url=$NODEPOOL_LOGS/$l
     echo "Checking $url"
-    # grab the last 30 lines or so
+    # grab the last 100 lines or so.  This is usually enough to get a
+    # useful bit of the error in there.
     output=$(wget -qO- --header="accept-encoding: gzip" $url \
-                    | zcat | tail -n 30)
+                    | zcat | tail -n 100)
 
     # this is a pretty crappy check, but this is the last thing in the
     # build scripts.  change out to give better values.
@@ -42,7 +48,11 @@ for l in $ALL_LOGS; do
         OVERALL="FAIL"
         echo "FAIL: $url" >> $STATUS_FILE
         echo "----" >> $STATUS_FILE
-        echo -e "$output" | tail -n 10 >> $STATUS_FILE
+        # there's a lot of unmounting, etc when an image fails
+        # we usually find a helpful error here
+        echo -e "$output" | head -n 50 >> $STATUS_FILE
+        echo "... [snip] ..." >> $STATUS_FILE
+        echo -e "$output" | tail -n 5 >> $STATUS_FILE
         echo "----" >> $STATUS_FILE
     else
         echo "PASS: $url" >> $STATUS_FILE
