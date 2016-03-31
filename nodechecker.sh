@@ -15,6 +15,7 @@ ALL_LOGS+=" dib.fedora-23.log"
 
 ALL_LOGS+=" dib.ubuntu-trusty.log"
 ALL_LOGS+=" dib.debian-jessie.log"
+ALL_LOGS+=" dib.ubuntu-xenial.log"
 
 STATUS_FILE=$(mktemp)
 OVERALL="PASS"
