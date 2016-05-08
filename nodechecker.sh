@@ -4,11 +4,6 @@ NODEPOOL_LOGS="http://nodepool.openstack.org"
 
 ALL_LOGS=""
 
-# dib builds
-
-# "old" image based build
-ALL_LOGS+=" dib.devstack-centos7.log"
-
 # minimal build
 ALL_LOGS+=" dib.centos-7.log"
 ALL_LOGS+=" dib.fedora-23.log"
