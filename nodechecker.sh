@@ -7,6 +7,7 @@ ALL_LOGS=""
 # minimal build
 ALL_LOGS+=" dib.centos-7.log"
 ALL_LOGS+=" dib.fedora-23.log"
+ALL_LOGS+=" dib.fedora-24.log"
 
 ALL_LOGS+=" dib.ubuntu-trusty.log"
 ALL_LOGS+=" dib.debian-jessie.log"
